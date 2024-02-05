@@ -2,6 +2,7 @@ package com.example.effectivemobiletester.ui.composable.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,16 +24,23 @@ fun EMInputField(
 
 ) {
     TextField(
+        modifier = modifier,
         value = value,
         onValueChange = onValueChange,
         singleLine = true,
         placeholder = { Text(text = placeholder) },
-        shape = RoundedCornerShape(8.dp),
         colors = TextFieldDefaults.colors(
+            focusedTextColor = Color.Blue,
+
+            
+            focusedContainerColor = Color.Black,
+            unfocusedContainerColor = Color.Black,
+            disabledContainerColor = Color.Black,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent
-        )
+            disabledIndicatorColor = Color.Transparent,
+        ),
+        shape = RoundedCornerShape(8.dp)
     )
 }
 
