@@ -9,7 +9,7 @@ import com.example.effectivemobiletester.model.local.UserLocal
 @Dao
 interface UserDao {
     @Query("SELECT * FROM user")
-    suspend fun loadAll(first: String, last: String): UserLocal
+    suspend fun loadAll(): List<UserLocal>
 
     @Insert
     suspend fun insert(user: UserLocal)

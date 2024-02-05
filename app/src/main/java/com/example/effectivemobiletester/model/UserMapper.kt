@@ -9,16 +9,18 @@ class UserMapper {
 
     fun localToDomain(userLocal: UserLocal): UserDomain {
         return UserDomain(
-            login = userLocal.login,
-            password = userLocal.password,
+            firstName = userLocal.firstName,
+            lastName = userLocal.lastName,
+            phone = userLocal.phone,
         )
     }
 
     fun domainToLocal(userDomain: UserDomain): UserLocal {
         return UserLocal(
             id = 0,
-            login = userDomain.login,
-            password = userDomain.password,
+            firstName = userDomain.firstName,
+            lastName = userDomain.lastName,
+            phone = userDomain.phone,
         )
     }
 }

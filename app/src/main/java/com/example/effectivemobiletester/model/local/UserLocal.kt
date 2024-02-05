@@ -7,8 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = UserLocal.TABLE_NAME)
 data class UserLocal(
     @PrimaryKey val id: Long,
-    @ColumnInfo("login") val login: String,
-    @ColumnInfo("password") val password: String,
+    @ColumnInfo("first_name") val firstName: String,
+    @ColumnInfo("last_name") val lastName: String,
+    @ColumnInfo("phone") val phone: String,
 ) {
     companion object {
         const val TABLE_NAME = "user"
