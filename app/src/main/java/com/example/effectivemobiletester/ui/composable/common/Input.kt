@@ -31,7 +31,7 @@ fun EMInputField(
         placeholder = { Text(text = placeholder) },
         colors = TextFieldDefaults.colors(
             focusedTextColor = Color.Blue,
-
+            unfocusedTextColor = Color.Blue,
             
             focusedContainerColor = Color.Black,
             unfocusedContainerColor = Color.Black,

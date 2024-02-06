@@ -18,7 +18,14 @@ class UserRepository @Inject constructor(
         try {
             val usersLocal = userDao.loadAll()
             val usersDomain = usersLocal.map { userMapper.localToDomain(it) }
-            return@withContext Result.success(usersDomain)
+            if (usersDomain.size == 0) {
+                return@withContext Result.success(null)
+            } else if (usersDomain.size > 1) {
+                clearUsers()
+                return@withContext Result.success(null)
+            } else {
+                return@withContext Result.success(usersDomain[0])
+            }
         } catch (e: Exception) {
             return@withContext Result.failure(e)
         }
@@ -29,6 +36,15 @@ class UserRepository @Inject constructor(
             val userLocal = userMapper.domainToLocal(userDomain)
             userDao.deleteAll()
             userDao.insert(userLocal)
+            return@withContext Result.success(Unit)
+        } catch (e: Exception) {
+            return@withContext Result.failure(e)
+        }
+    }
+
+    suspend fun clearUsers() = withContext(Dispatchers.IO) {
+        try {
+            userDao.deleteAll()
             return@withContext Result.success(Unit)
         } catch (e: Exception) {
             return@withContext Result.failure(e)

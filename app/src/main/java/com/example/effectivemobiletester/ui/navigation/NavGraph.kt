@@ -6,7 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.effectivemobiletester.ui.composable.login.LoginScreen
+import com.example.effectivemobiletester.ui.composable.main.MainScreen
 import com.example.effectivemobiletester.ui.viewmodel.login.LoginViewModel
+import com.example.effectivemobiletester.ui.viewmodel.main.MainViewModel
 
 @Composable
 fun NavGraph() {
@@ -20,7 +22,8 @@ fun NavGraph() {
             LoginScreen(viewModel = viewModel)
         }
         composable(Destination.MAIN.route) {
-
+            val viewModel = hiltViewModel<MainViewModel>()
+            MainScreen(viewModel = viewModel)
         }
     }
 }
