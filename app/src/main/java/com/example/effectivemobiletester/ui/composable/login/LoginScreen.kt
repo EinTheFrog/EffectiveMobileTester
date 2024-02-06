@@ -65,7 +65,11 @@ private fun LoginScreen(
     updatePhone: (String) -> Unit,
     login: () -> Unit,
 ) {
-    Scaffold() { paddingValues ->
+    val topBarVisible = uiState is LoginUiState.Default && !uiState.userHasEmptyFields()
+    Scaffold(
+        topBar = { LoginTopBar(visible = topBarVisible) },
+        bottomBar = { LoginBottomBar() },
+    ) { paddingValues ->
         Box(
             modifier = Modifier.padding(paddingValues),
         ) {
@@ -144,7 +148,7 @@ private fun LoginContent(
         Spacer(modifier = Modifier.height(Paddings.MEDIUM.size))
         EMButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(id = R.string.login),
+            text = stringResource(id = R.string.login_action),
             enabled = loginEnabled,
             onClick = login,
         )

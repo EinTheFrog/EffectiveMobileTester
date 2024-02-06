@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">EffectiveMobileTester</string>
     
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
-    <string name="phone_number">Phone Number</string>
-    <string name="login">Login</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="phone_number">Телефонный номер</string>
+    <string name="login_action">Войти</string>
+    <string name="login_title">Вход</string>
+    <string name="login_policy_1">Нажимая кнопку “Войти”, Вы принимаете</string>
+    <string name="login_policy_2">условия программы лояльности</string>
+
+    <string name="close_icon">Иконка закрытия</string>
 </resources>
