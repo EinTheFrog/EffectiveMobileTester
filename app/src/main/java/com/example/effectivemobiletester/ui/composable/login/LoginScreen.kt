@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
@@ -13,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.effectivemobiletester.R
+import com.example.effectivemobiletester.ui.composable.common.EMButton
 import com.example.effectivemobiletester.ui.composable.common.EMInputField
 import com.example.effectivemobiletester.ui.theme.EffectiveMobileTesterTheme
 import com.example.effectivemobiletester.ui.theme.Paddings
@@ -30,13 +33,27 @@ import com.example.effectivemobiletester.ui.viewmodel.login.LoginViewModel
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
+    navigateToMain: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCurrentUser()
+    }
+    LaunchedEffect(uiState) {
+        if (uiState is LoginUiState.Finished) {
+            navigateToMain()
+        }
+    }
+
     LoginScreen(
         uiState,
         updateFirstName = viewModel::updateUserFirstName,
         updateLastName = viewModel::updateUserLastName,
         updatePhone = viewModel::updateUserPhone,
+        login = {
+                viewModel.saveUser()
+        },
     )
 }
 
@@ -46,6 +63,7 @@ private fun LoginScreen(
     updateFirstName: (String) -> Unit,
     updateLastName: (String) -> Unit,
     updatePhone: (String) -> Unit,
+    login: () -> Unit,
 ) {
     Scaffold() { paddingValues ->
         Box(
@@ -60,9 +78,11 @@ private fun LoginScreen(
                             firstName = uiState.user.firstName,
                             lastName = uiState.user.lastName,
                             phone = uiState.user.phone,
+                            loginEnabled = !uiState.userHasEmptyFields(),
                             updateFirstName = updateFirstName,
                             updateLastName = updateLastName,
                             updatePhone = updatePhone,
+                            login = login,
                         )
                     }
                 }
@@ -88,9 +108,11 @@ private fun LoginContent(
     firstName: String,
     lastName: String,
     phone: String,
+    loginEnabled: Boolean,
     updateFirstName: (String) -> Unit,
     updateLastName: (String) -> Unit,
     updatePhone: (String) -> Unit,
+    login: () -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -100,21 +122,31 @@ private fun LoginContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         EMInputField(
+            modifier = Modifier.fillMaxWidth(),
             value = firstName,
             onValueChange = updateFirstName,
             placeholder = stringResource(id = R.string.first_name)
         )
         Spacer(modifier = Modifier.height(Paddings.MEDIUM.size))
         EMInputField(
+            modifier = Modifier.fillMaxWidth(),
             value = lastName,
             onValueChange = updateLastName,
             placeholder = stringResource(id = R.string.last_name)
         )
         Spacer(modifier = Modifier.height(Paddings.MEDIUM.size))
         EMInputField(
+            modifier = Modifier.fillMaxWidth(),
             value = phone,
             onValueChange = updatePhone,
             placeholder = stringResource(id = R.string.phone_number)
+        )
+        Spacer(modifier = Modifier.height(Paddings.MEDIUM.size))
+        EMButton(
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(id = R.string.login),
+            enabled = loginEnabled,
+            onClick = login,
         )
     }
 }
@@ -132,6 +164,7 @@ private fun LoginPreview() {
                 updateFirstName = {},
                 updateLastName = {},
                 updatePhone = {},
+                login = {},
             )
         }
     }

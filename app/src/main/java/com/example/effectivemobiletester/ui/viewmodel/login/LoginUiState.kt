@@ -11,7 +11,14 @@ sealed interface LoginUiState {
             lastName = "",
             phone = "",
         ),
-    ) : LoginUiState
+    ) : LoginUiState {
+
+        fun userHasEmptyFields(): Boolean {
+            return user.firstName.isEmpty()
+                    || user.lastName.isEmpty()
+                    || user.phone.isEmpty()
+        }
+    }
 
     data object Finished: LoginUiState
 }

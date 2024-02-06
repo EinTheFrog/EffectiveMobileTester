@@ -17,10 +17,13 @@ import androidx.core.view.WindowCompat
 
 private val LightColorScheme = lightColorScheme(
     primary = Pink,
-    secondary = Orange,
+    onPrimary = White,
+    secondary = LightPink,
+    tertiary = Orange,
     primaryContainer = LightGrey,
-    onBackground = Black,
     onPrimaryContainer = Black,
+    background = White,
+    onBackground = Black,
 )
 
 @Composable

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.effectivemobiletester.model.domain.UserDomain
 import com.example.effectivemobiletester.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,12 +21,28 @@ class LoginViewModel @Inject constructor(
     fun loadCurrentUser() {
         viewModelScope.launch {
             startLoading()
-            when(uiState.value) {
+            when (uiState.value) {
                 is LoginUiState.Default -> {
                     val currentUser = loadUserFromDatabase()
                     if (currentUser != null) {
                         _uiState.value = LoginUiState.Finished
                     }
+                }
+                is LoginUiState.Finished -> {}
+            }
+            finishLoading()
+        }
+    }
+
+    fun saveUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            startLoading()
+            when (val currentState = uiState.value) {
+                is LoginUiState.Default -> {
+                    if (currentState.userHasEmptyFields()) return@launch
+                    val userInfo = currentState.user
+                    userRepository.saveCurrentUser(userInfo)
+                    _uiState.value = LoginUiState.Finished
                 }
                 is LoginUiState.Finished -> {}
             }
@@ -77,7 +94,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun startLoading() {
-        when(val currentUiState = uiState.value) {
+        when (val currentUiState = uiState.value) {
             is LoginUiState.Default -> {
                 _uiState.value = currentUiState.copy(loading = true)
             }
@@ -86,7 +103,7 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun finishLoading() {
-        when(val currentUiState = uiState.value) {
+        when (val currentUiState = uiState.value) {
             is LoginUiState.Default -> {
                 _uiState.value = currentUiState.copy(loading = false)
             }

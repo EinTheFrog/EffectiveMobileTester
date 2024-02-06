@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.effectivemobiletester.ui.theme.EffectiveMobileTesterTheme
 
 @Composable
 fun EMInputField(
@@ -30,15 +31,17 @@ fun EMInputField(
         singleLine = true,
         placeholder = { Text(text = placeholder) },
         colors = TextFieldDefaults.colors(
-            focusedTextColor = Color.Blue,
-            unfocusedTextColor = Color.Blue,
+            focusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            unfocusedTextColor = MaterialTheme.colorScheme.onPrimaryContainer,
             
-            focusedContainerColor = Color.Black,
-            unfocusedContainerColor = Color.Black,
-            disabledContainerColor = Color.Black,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
+            focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+            disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+
             disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
         ),
         shape = RoundedCornerShape(8.dp)
     )
@@ -47,5 +50,7 @@ fun EMInputField(
 @Preview
 @Composable
 fun EMInputFieldPreview() {
-    EMInputField(value = "", onValueChange = {}, placeholder = "Phone")
+    EffectiveMobileTesterTheme {
+        EMInputField(value = "", onValueChange = {}, placeholder = "Phone")
+    }
 }

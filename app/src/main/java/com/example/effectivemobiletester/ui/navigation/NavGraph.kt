@@ -19,7 +19,14 @@ fun NavGraph() {
     ) {
         composable(Destination.LOGIN.route) {
             val viewModel = hiltViewModel<LoginViewModel>()
-            LoginScreen(viewModel = viewModel)
+            LoginScreen(
+                viewModel = viewModel,
+                navigateToMain = { navController.navigate(Destination.MAIN.route) {
+                    popUpTo(Destination.LOGIN.route) {
+                        inclusive = true
+                    }
+                } },
+            )
         }
         composable(Destination.MAIN.route) {
             val viewModel = hiltViewModel<MainViewModel>()
