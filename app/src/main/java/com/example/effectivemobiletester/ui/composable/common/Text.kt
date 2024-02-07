@@ -35,3 +35,17 @@ fun Title(
         color = MaterialTheme.colorScheme.onBackground,
     )
 }
+
+@Composable
+fun BottomBarLabel(
+    modifier: Modifier = Modifier,
+    text: String
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        fontSize = MaterialTheme.typography.labelSmall.fontSize,
+        textAlign = TextAlign.Center,
+        color = MaterialTheme.colorScheme.secondaryContainer,
+    )
+}

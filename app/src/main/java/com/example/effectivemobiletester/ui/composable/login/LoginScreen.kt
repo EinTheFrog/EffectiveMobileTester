@@ -1,7 +1,6 @@
 package com.example.effectivemobiletester.ui.composable.login
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,9 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -21,17 +18,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.effectivemobiletester.R
 import com.example.effectivemobiletester.ui.composable.common.EMButton
 import com.example.effectivemobiletester.ui.composable.common.EMInputField
+import com.example.effectivemobiletester.ui.composable.common.EMPhoneInputField
 import com.example.effectivemobiletester.ui.theme.EffectiveMobileTesterTheme
 import com.example.effectivemobiletester.ui.theme.Paddings
+import com.example.effectivemobiletester.ui.viewmodel.app.AppViewModel
 import com.example.effectivemobiletester.ui.viewmodel.login.LoginUiState
 import com.example.effectivemobiletester.ui.viewmodel.login.LoginViewModel
 
 @Composable
 fun LoginScreen(
+    appViewModel: AppViewModel,
     viewModel: LoginViewModel,
     navigateToMain: () -> Unit,
 ) {
@@ -44,6 +43,9 @@ fun LoginScreen(
         if (uiState is LoginUiState.Finished) {
             navigateToMain()
         }
+        val topBarVisible = uiState is LoginUiState.Default &&
+                !(uiState as LoginUiState.Default).userHasEmptyFields()
+        appViewModel.updateLoginTopBarVisibility(topBarVisible)
     }
 
     LoginScreen(
@@ -51,9 +53,7 @@ fun LoginScreen(
         updateFirstName = viewModel::updateUserFirstName,
         updateLastName = viewModel::updateUserLastName,
         updatePhone = viewModel::updateUserPhone,
-        login = {
-                viewModel.saveUser()
-        },
+        login = viewModel::saveUser,
     )
 }
 
@@ -65,34 +65,24 @@ private fun LoginScreen(
     updatePhone: (String) -> Unit,
     login: () -> Unit,
 ) {
-    val topBarVisible = uiState is LoginUiState.Default && !uiState.userHasEmptyFields()
-    Scaffold(
-        topBar = { LoginTopBar(visible = topBarVisible) },
-        bottomBar = { LoginBottomBar() },
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier.padding(paddingValues),
-        ) {
-            when(uiState) {
-                is LoginUiState.Default -> {
-                    if (uiState.loading) {
-                        LoadingContent()
-                    } else {
-                        LoginContent(
-                            firstName = uiState.user.firstName,
-                            lastName = uiState.user.lastName,
-                            phone = uiState.user.phone,
-                            loginEnabled = !uiState.userHasEmptyFields(),
-                            updateFirstName = updateFirstName,
-                            updateLastName = updateLastName,
-                            updatePhone = updatePhone,
-                            login = login,
-                        )
-                    }
-                }
-                is LoginUiState.Finished -> {}
+    when(uiState) {
+        is LoginUiState.Default -> {
+            if (uiState.loading) {
+                LoadingContent()
+            } else {
+                LoginContent(
+                    firstName = uiState.user.firstName,
+                    lastName = uiState.user.lastName,
+                    phone = uiState.user.phone,
+                    loginEnabled = !uiState.userHasEmptyFields(),
+                    updateFirstName = updateFirstName,
+                    updateLastName = updateLastName,
+                    updatePhone = updatePhone,
+                    login = login,
+                )
             }
         }
+        is LoginUiState.Finished -> {}
     }
 }
 
@@ -139,7 +129,7 @@ private fun LoginContent(
             placeholder = stringResource(id = R.string.last_name)
         )
         Spacer(modifier = Modifier.height(Paddings.MEDIUM.size))
-        EMInputField(
+        EMPhoneInputField(
             modifier = Modifier.fillMaxWidth(),
             value = phone,
             onValueChange = updatePhone,
